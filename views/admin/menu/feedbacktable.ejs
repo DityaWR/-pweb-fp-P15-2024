@@ -1,0 +1,83 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card my-4">
+      <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+        <div
+          class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center"
+        >
+          <h6 class="text-white text-capitalize ps-3 text-start">
+            Daftar Feedback
+          </h6>
+        </div>
+      </div>
+      <div class="card-body px-0 pb-2">
+        <div class="table-responsive p-0">
+          <table class="table align-items-center mb-0" id="feedback-table">
+            <thead>
+              <tr>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">Nama</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">Email</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">Isi Feedback</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% feedbacks.forEach((feedback, index) => { %>
+              <!-- Loop melalui data feedback -->
+              <tr id="feedback-<%= feedback.id %>">
+                <td class="text-sm text-center"><%= index + 1 %></td>
+                <td class="text-sm text-start"><%= feedback.name %></td>
+                <td class="text-sm text-start"><%= feedback.email %></td>
+                <td class="text-sm text-start"><%= feedback.message %></td>
+                <td class="text-sm">
+                  <span class="badge badge-sm bg-gradient-danger" onclick="deleteFeedback(<%= feedback.id %>)">Hapus</span>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  function deleteFeedback(id) {
+    Swal.fire({
+      title: 'Apakah Anda yakin?',
+      text: "Anda tidak dapat mengembalikan ini!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, hapus!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`/admin/delete-feedback/${id}`, {
+          method: 'DELETE',
+        })
+        .then(response => {
+          if (response.ok) {
+            // Menghapus baris tabel yang sesuai setelah feedback dihapus
+            document.getElementById(`feedback-${id}`).remove(); // Menghapus elemen baris berdasarkan ID
+            Swal.fire(
+              'Dihapus!',
+              'Feedback telah dihapus.',
+              'success'
+            );
+          }
+        })
+        .catch(error => {
+          Swal.fire(
+            'Gagal!',
+            'Terjadi kesalahan saat menghapus feedback.',
+            'error'
+          );
+        });
+      }
+    });
+  }
+</script>

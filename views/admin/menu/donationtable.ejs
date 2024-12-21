@@ -1,0 +1,62 @@
+<% 
+function formatRupiah(amount) {
+    return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); // Format with dots
+}
+%>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card my-4">
+      <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+        <div
+          class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3 d-flex justify-content-between align-items-center"
+        >
+          <h6 class="text-white text-capitalize ps-3 text-start">
+            Daftar Program Donasi
+          </h6>
+          <a href="/admin/add-donation" class="btn btn-primary me-3">+ Tambahkan Donasi</a>
+        </div>
+      </div>
+      <div class="card-body px-0 pb-2">
+        <div class="table-responsive p-0">
+          <table class="table align-items-center text-center mb-0">
+            <thead>
+              <tr>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-start">Nama Program</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Dana Terkumpul</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Target Dana</th>
+                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                <th class="text-secondary opacity-7">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% crowdfunds.forEach((crowdfund, index) => { %>
+                <tr>
+                  <td class="text-sm"><%= index + 1 %></td>
+                  <td class="text-sm text-start"><%= crowdfund.crowdfund_title %></td>
+                  <td class="text-sm">Rp<%= formatRupiah(crowdfund.danaTerkumpul) %></td>
+                  <td class="text-sm">Rp<%= formatRupiah(crowdfund.target_dana) %></td>
+                  <td class="text-sm">
+                    <span class="badge badge-sm <%= crowdfund.status === 'DIBUKA' ? 'bg-gradient-success' : 'bg-gradient-danger' %>">
+                      <%= crowdfund.status %>
+                    </span>
+                  </td>
+                  <td class="text-sm">
+                    <form action="/admin/detail-crowdfund/<%= crowdfund.id %>" method="GET" style="display:inline;">
+                      <button type="submit" class="btn btn-info btn-sm">Detail</button>
+                    </form>
+                    <a href="/admin/edit-crowdfund/<%= crowdfund.id %>" class="btn btn-warning btn-sm">Edit</a>
+                    <form action="/admin/delete-crowdfund/<%= crowdfund.id %>" method="GET" style="display:inline;">
+                      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
